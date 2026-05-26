@@ -649,11 +649,9 @@ async function clearMatch(id) {
     if (idx >= 0 && prev) allMatches[idx] = prev;
     updateStats();
     renderList();
-    showToast('Error al borrar: ' + error.message, 'error');
+    showToast('Error: ' + error.message, 'error');
   } else {
     showToast('Resultado borrado');
-    // Recargar todo desde Supabase para garantizar consistencia
-    setTimeout(() => loadMatches(), 800);
   }
 }
 
