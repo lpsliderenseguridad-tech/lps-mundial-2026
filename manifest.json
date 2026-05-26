@@ -1,17 +1,16 @@
 {
   "name": "Mundial 2026 · LPS Seguridad",
   "short_name": "Mundial 2026",
-  "description": "Fixture del Mundial 2026 con resultados en vivo y notificaciones - LPS Seguridad La Carlota",
+  "description": "Fixture y resultados del Mundial 2026 en vivo - LPS Seguridad La Carlota",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#08111F",
   "theme_color": "#08111F",
   "orientation": "portrait",
   "lang": "es",
-  "categories": ["sports", "news"],
   "icons": [
-    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
   "shortcuts": [
     {
@@ -19,7 +18,7 @@
       "short_name": "ARG",
       "description": "Partidos de Argentina",
       "url": "/?tab=argentina",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
