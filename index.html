@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#08111F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mundial 2026">
+<meta name="description" content="Fixture y resultados del Mundial 2026 - LPS Seguridad La Carlota">
+<link rel="manifest" href="/manifest.json">
+<title>Mundial 2026 · LPS</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dark:#08111F;--d2:#0D1828;--d3:#122030;--d4:#182840;
+  --mid:#1E3050;--mid2:#243860;
+  --gold:#E8C542;--gold2:#F5D96B;--gold3:rgba(232,197,66,.12);
+  --cel:#6CACE4;--cel2:#9ECAF0;--cel3:rgba(108,172,228,.12);
+  --text:#DDE5F3;--muted:#7A8EAD;--white:#FFF;
+  --green:#2ECC71;--red:#E74C3C;--orange:#F39C12;
+  --tab-h:62px;--hdr-h:58px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--dark);color:var(--text);font-family:'Barlow Condensed',sans-serif;overflow:hidden;}
+body{display:flex;flex-direction:column;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--d2);}
+::-webkit-scrollbar-thumb{background:var(--mid);border-radius:2px;}
+
+/* ── HEADER ── */
+.hdr{height:var(--hdr-h);background:linear-gradient(135deg,#050C18,#162035);border-bottom:2px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 14px;flex-shrink:0;position:relative;z-index:10;}
+.hdr-left{display:flex;align-items:center;gap:10px;}
+.lps-logo{background:#FFD000;border-radius:5px;padding:3px 9px;display:flex;align-items:center;}
+.lps-logo-txt{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:#000;line-height:1;}
+.lps-logo-txt .pw{color:#fff;}
+.hdr-texts{display:flex;flex-direction:column;}
+.hdr-pre{font-size:7px;font-weight:600;letter-spacing:2px;color:var(--gold);text-transform:uppercase;line-height:1;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);line-height:1;letter-spacing:1px;}
+.hdr-title span{color:var(--gold);}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+#install-btn{display:none;background:var(--gold);color:#000;border:none;border-radius:6px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.8;}}
+.notif-btn{background:var(--cel3);border:1px solid rgba(108,172,228,.3);color:var(--cel);border-radius:6px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;letter-spacing:.5px;}
+.notif-btn.active{background:var(--cel);color:var(--dark);}
+
+/* ── MAIN CONTENT ── */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:var(--tab-h);}
+
+/* ── TABS ── */
+.tabs{height:var(--tab-h);background:var(--d2);border-top:1px solid rgba(255,255,255,.07);display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--muted);transition:color .2s;padding:8px 0;position:relative;}
+.tab.active{color:var(--gold);}
+.tab.active::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--gold);border-radius:0 0 3px 3px;}
+.tab-icon{font-size:20px;line-height:1;}
+.tab-label{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;line-height:1;}
+
+/* ── SECTIONS ── */
+.section{display:none;padding:12px 12px 8px;animation:fadeIn .2s ease;}
+.section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── ARGENTINA TAB ── */
+/* Next match banner */
+.next-match{background:linear-gradient(135deg,#0A1A2E,#162840);border:1.5px solid rgba(108,172,228,.35);border-radius:12px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;}
+.next-match::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cel),var(--gold));}
+.nm-label{font-size:8px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:6px;}
+.nm-teams{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.nm-team{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);line-height:1;}
+.nm-team.arg{color:var(--cel2);}
+.nm-vs{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--gold);background:rgba(232,197,66,.12);padding:3px 8px;border-radius:4px;}
+.nm-info{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.nm-date{font-size:11px;font-weight:700;color:var(--white);}
+.nm-venue{font-size:10px;font-weight:500;color:var(--muted);}
+/* Countdown */
+.countdown{display:flex;gap:8px;justify-content:center;margin-top:10px;}
+.cd-unit{text-align:center;background:rgba(0,0,0,.25);border-radius:8px;padding:8px 12px;min-width:54px;}
+.cd-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);line-height:1;display:block;}
+.cd-lbl{font-size:8px;font-weight:600;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;display:block;margin-top:2px;}
+.cd-sep{font-family:'Bebas Neue',sans-serif;font-size:24px;color:rgba(232,197,66,.4);align-self:center;padding-bottom:10px;}
+/* Match playing indicator */
+.live-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.4);border-radius:4px;padding:2px 6px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#E74C3C;animation:blink .8s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.live-txt{font-size:8px;font-weight:800;letter-spacing:1px;color:#E74C3C;}
+
+/* Argentina match cards */
+.arg-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.arg-card{background:var(--d3);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px;position:relative;overflow:hidden;}
+.arg-card.current{border-color:rgba(108,172,228,.4);background:linear-gradient(135deg,#0C1E35,#152C4A);}
+.arg-card.played{border-color:rgba(46,204,113,.2);background:linear-gradient(135deg,#0D1E12,#122015);}
+.arg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cel),transparent);}
+.arg-card.played::before{background:linear-gradient(90deg,var(--green),transparent);}
+.ac-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.ac-date{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--gold);text-transform:uppercase;}
+.ac-venue{font-size:9px;font-weight:500;color:var(--muted);}
+.ac-match{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.ac-team{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;}
+.ac-flag{font-size:24px;line-height:1;}
+.ac-name{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--white);letter-spacing:.5px;line-height:1.2;text-align:center;}
+.ac-name.arg{color:var(--cel2);}
+.ac-score{text-align:center;flex-shrink:0;}
+.ac-score-nums{display:flex;align-items:center;gap:4px;}
+.ac-score-box{width:32px;height:32px;border-radius:6px;background:rgba(0,0,0,.3);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--muted);}
+.ac-score-box.filled{color:var(--white);border-color:rgba(232,197,66,.4);background:rgba(232,197,66,.08);}
+.ac-score-box.win{color:var(--gold2);border-color:rgba(46,204,113,.4);background:rgba(46,204,113,.08);}
+.ac-sep{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);}
+.ac-vs{font-size:10px;font-weight:700;color:var(--gold);margin-top:4px;letter-spacing:1px;}
+
+/* LPS Ad banner */
+.lps-banner{background:linear-gradient(135deg,#1A1500,#2A2200);border:1px solid rgba(232,197,66,.25);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.lps-banner-logo{background:#FFD000;border-radius:5px;padding:4px 10px;flex-shrink:0;}
+.lps-banner-logo-txt{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#000;line-height:1;}
+.lps-banner-logo-txt .pw{color:#fff;}
+.lps-banner-texts{}
+.lps-banner-name{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);letter-spacing:1px;line-height:1;display:block;}
+.lps-banner-sub{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.5px;display:block;margin-top:1px;}
+.lps-banner-contact{font-size:10px;font-weight:700;color:var(--cel);display:block;margin-top:3px;}
+
+/* ── GRUPOS TAB ── */
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(232,197,66,.3),transparent);}
+.groups-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.gc{background:var(--d3);border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden;}
+.gc.arg-group{border-color:rgba(108,172,228,.35);background:linear-gradient(135deg,#0C1E35,#15305A);}
+.gc-hdr{background:var(--mid);padding:5px 10px;display:flex;align-items:center;justify-content:space-between;}
+.gc.arg-group .gc-hdr{background:rgba(108,172,228,.18);}
+.gc-letter{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--gold);line-height:1;}
+.gc.arg-group .gc-letter{color:var(--cel2);}
+.gc-count{font-size:8px;font-weight:600;color:var(--muted);}
+.gc-matches{padding:4px 8px;}
+.gm{display:flex;align-items:center;gap:3px;margin-bottom:3px;line-height:1;}
+.gm-t1{font-size:8.5px;font-weight:700;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gm-t1.arg-team{color:var(--cel2);}
+.gm-t2{font-size:8.5px;font-weight:700;color:var(--text);flex:1;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gm-score{display:flex;align-items:center;gap:1px;flex-shrink:0;}
+.gsb{width:14px;height:14px;border:1px solid rgba(255,255,255,.15);border-radius:2px;background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:10px;color:var(--muted);}
+.gsb.set{color:var(--white);background:rgba(232,197,66,.1);border-color:rgba(232,197,66,.3);}
+.gm-sep{font-size:8px;color:var(--muted);font-weight:700;}
+.gc-divider{height:1px;background:rgba(255,255,255,.05);margin:2px 0;}
+
+/* ── ELIMINATORIA TAB ── */
+.elim-section{margin-bottom:14px;}
+.elim-title{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:var(--gold);display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.elim-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(232,197,66,.25),transparent);}
+.ko-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.ko-card{background:var(--d3);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px 10px;}
+.ko-card.arg{border-color:rgba(108,172,228,.35);background:linear-gradient(135deg,#0C1E35,#15305A);}
+.ko-card.final-card{background:linear-gradient(135deg,#161200,#2A2300);border-color:rgba(232,197,66,.3);grid-column:span 2;}
+.ko-date{font-size:7px;font-weight:700;letter-spacing:1px;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:4px;}
+.ko-date.arg{color:var(--cel2);}
+.ko-match{display:flex;align-items:center;gap:4px;}
+.ko-team{font-size:9px;font-weight:700;color:var(--muted);flex:1;line-height:1.2;font-style:italic;}
+.ko-team.arg{color:var(--cel2);font-style:normal;}
+.ko-score{display:flex;align-items:center;gap:1px;flex-shrink:0;}
+.kosb{width:16px;height:16px;border:1px solid rgba(255,255,255,.15);border-radius:3px;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;color:var(--muted);}
+.kosb.set{color:var(--white);background:rgba(232,197,66,.1);border-color:rgba(232,197,66,.3);}
+.ko-venue{font-size:7px;color:var(--muted);margin-top:3px;display:block;}
+/* Final card special */
+.final-match{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0;}
+.final-team{text-align:center;flex:1;}
+.final-team-name{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);display:block;font-style:italic;}
+.final-vs{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--gold);}
+.final-score-big{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:4px;}
+.final-sb{width:28px;height:24px;border:1.5px solid rgba(255,255,255,.2);border-radius:4px;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted);}
+.final-sb.set{color:var(--white);border-color:rgba(232,197,66,.4);background:rgba(232,197,66,.1);}
+
+/* ── TOAST / SNACKBAR ── */
+.toast{position:fixed;bottom:calc(var(--tab-h) + 10px);left:12px;right:12px;background:var(--d4);border:1px solid rgba(232,197,66,.3);border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:1000;transform:translateY(100px);opacity:0;transition:all .3s;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-txt{font-size:12px;font-weight:600;color:var(--text);flex:1;line-height:1.3;}
+.toast-btn{background:var(--gold);color:#000;border:none;border-radius:5px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;cursor:pointer;white-space:nowrap;}
+.toast-close{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 2px;}
+
+/* ── LOADING ── */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;flex-direction:column;gap:12px;}
+.spinner{width:32px;height:32px;border:3px solid rgba(232,197,66,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-txt{font-size:11px;color:var(--muted);letter-spacing:1px;}
+
+/* ── OFFLINE BADGE ── */
+.offline-bar{background:rgba(231,76,60,.15);border-bottom:1px solid rgba(231,76,60,.3);padding:4px 14px;font-size:9px;font-weight:700;color:#E74C3C;letter-spacing:1px;text-align:center;display:none;}
+.offline-bar.show{display:block;}
+
+/* ── UPDATE DOT ── */
+.update-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink .6s infinite;}
+</style>
+</head>
+<body>
+
+<!-- OFFLINE BAR -->
+<div class="offline-bar" id="offline-bar">📵 SIN CONEXIÓN — Mostrando datos guardados</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-left">
+    <div class="lps-logo"><span class="lps-logo-txt">L<span class="pw">P</span>S</span></div>
+    <div class="hdr-texts">
+      <span class="hdr-pre">Fixture Oficial</span>
+      <div class="hdr-title">MUNDIAL <span>2026</span></div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔 Activar</button>
+    <button id="install-btn" onclick="installApp()">📲 Instalar</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main" id="main">
+
+  <!-- ── ARGENTINA ── -->
+  <section class="section active" id="sec-argentina">
+
+    <!-- Next match / countdown -->
+    <div class="next-match" id="next-match-card">
+      <span class="nm-label" id="nm-label">⚡ Cargando próximo partido...</span>
+      <div class="nm-teams" id="nm-teams" style="display:none">
+        <div class="nm-team arg" id="nm-team1">Argentina</div>
+        <div class="nm-vs">VS</div>
+        <div class="nm-team" id="nm-team2">—</div>
+      </div>
+      <div class="nm-info" id="nm-info" style="display:none">
+        <span class="nm-date" id="nm-date"></span>
+        <span class="nm-venue" id="nm-venue"></span>
+      </div>
+      <div class="countdown" id="countdown" style="display:none">
+        <div class="cd-unit"><span class="cd-num" id="cd-d">00</span><span class="cd-lbl">Días</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-h">00</span><span class="cd-lbl">Horas</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-m">00</span><span class="cd-lbl">Min</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-s">00</span><span class="cd-lbl">Seg</span></div>
+      </div>
+    </div>
+
+    <!-- Argentina match cards -->
+    <div class="arg-cards" id="arg-cards">
+      <div class="loading"><div class="spinner"></div><span class="loading-txt">CARGANDO PARTIDOS</span></div>
+    </div>
+
+    <!-- LPS Banner -->
+    <div class="lps-banner">
+      <div class="lps-banner-logo"><span class="lps-banner-logo-txt">L<span class="pw">P</span>S</span></div>
+      <div class="lps-banner-texts">
+        <span class="lps-banner-name">Líder en Seguridad</span>
+        <span class="lps-banner-sub">🔥 Matafuegos · Alarmas · Cámaras · Domótica</span>
+        <span class="lps-banner-contact">📱 358 460-2508 · lpsseguridad.com.ar</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── GRUPOS ── -->
+  <section class="section" id="sec-grupos">
+    <div class="section-title">⚽ Fase de Grupos</div>
+    <div class="groups-grid" id="groups-grid">
+      <div class="loading" style="grid-column:span 2"><div class="spinner"></div><span class="loading-txt">CARGANDO GRUPOS</span></div>
+    </div>
+  </section>
+
+  <!-- ── ELIMINATORIA ── -->
+  <section class="section" id="sec-elim">
+    <div id="elim-content">
+      <div class="loading"><div class="spinner"></div><span class="loading-txt">CARGANDO</span></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- TABS -->
+<nav class="tabs">
+  <button class="tab active" onclick="setTab('argentina',this)">
+    <span class="tab-icon">⭐</span>
+    <span class="tab-label">Argentina</span>
+  </button>
+  <button class="tab" onclick="setTab('grupos',this)">
+    <span class="tab-icon">⚽</span>
+    <span class="tab-label">Grupos</span>
+  </button>
+  <button class="tab" onclick="setTab('elim',this)">
+    <span class="tab-icon">⚡</span>
+    <span class="tab-label">Eliminatoria</span>
+  </button>
+  <button class="tab" onclick="setTab('info',this)">
+    <span class="tab-icon">📢</span>
+    <span class="tab-label">LPS</span>
+  </button>
+</nav>
+
+<!-- INSTALL TOAST -->
+<div class="toast" id="install-toast">
+  <span class="toast-txt">📲 ¡Instalá la app y recibí notificaciones de los partidos de Argentina!</span>
+  <button class="toast-btn" onclick="installApp()">Instalar</button>
+  <button class="toast-close" onclick="closeToast()">✕</button>
+</div>
+
+<!-- LPS INFO SECTION (hidden initially, in main) -->
+<section class="section" id="sec-info" style="display:none;">
+  <div class="section-title">📢 LPS Seguridad</div>
+  <div style="background:linear-gradient(135deg,#1A1500,#2A2200);border:1.5px solid rgba(232,197,66,.3);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;">
+    <div style="font-size:40px;margin-bottom:8px;">🔥</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:2px;margin-bottom:4px;">LÍDER EN SEGURIDAD</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">La Carlota, Córdoba · Desde 2007</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;text-align:left;">
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">🔥</span><div><div style="font-size:11px;font-weight:800;color:var(--text);">Matafuegos</div><div style="font-size:9px;color:var(--muted);">Recarga y mantenimiento</div></div></div>
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">🚨</span><div><div style="font-size:11px;font-weight:800;color:var(--text);">Alarmas</div><div style="font-size:9px;color:var(--muted);">Sistemas de seguridad</div></div></div>
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📷</span><div><div style="font-size:11px;font-weight:800;color:var(--text);">Cámaras</div><div style="font-size:9px;color:var(--muted);">CCTV y vigilancia</div></div></div>
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">🏠</span><div><div style="font-size:11px;font-weight:800;color:var(--text);">Domótica</div><div style="font-size:9px;color:var(--muted);">Automatización hogar</div></div></div>
+    </div>
+    <a href="https://wa.me/5493584602508" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;border-radius:8px;padding:12px;text-decoration:none;font-weight:800;font-size:14px;margin-bottom:8px;letter-spacing:.5px;">
+      <span style="font-size:18px;">💬</span> WhatsApp: 358 460-2508
+    </a>
+    <a href="tel:3584602508" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--mid);color:var(--text);border-radius:8px;padding:10px;text-decoration:none;font-weight:700;font-size:13px;margin-bottom:8px;">
+      📞 Llamar ahora
+    </a>
+    <div style="font-size:10px;color:var(--muted);line-height:1.6;">Av. Dr. Enrique Gauna 1381 · La Carlota, Córdoba<br>lpsseguridad.com.ar</div>
+  </div>
+  <div style="background:var(--d3);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px;text-align:center;">
+    <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">📅 MUNDIAL 2026 · FECHA DE HOY</div>
+    <div id="info-today" style="font-size:11px;color:var(--muted);line-height:1.6;"></div>
+  </div>
+</section>
+
+<!-- SUPABASE CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ════════════════════════════════════════════
+// CONFIGURACIÓN — reemplazá con tus datos
+// ════════════════════════════════════════════
+const SB_URL  = 'https://gesujigrxpqvyuquitmz.supabase.co';
+const SB_KEY  = 'sb_publishable_jEvLMS6TZnRFgyAtEaY7JQ_Va8XpgYk'; // ← reemplazar con tu anon key
+const VAPID_PUBLIC = 'TU_VAPID_PUBLIC_KEY'; // ← reemplazar (Parte 3)
+
+// ════════════════════════════════════════════
+// DATOS LOCALES (fallback sin internet)
+// ════════════════════════════════════════════
+const ARG_LOCAL = [
+  {id:55,equipo1:'Argentina',flag1:'⭐',equipo2:'Argelia',flag2:'🇩🇿',fecha:'2026-06-16',hora_arg:'22:00',sede:'Kansas City',goles1:null,goles2:null,es_argentina:true},
+  {id:57,equipo1:'Argentina',flag1:'⭐',equipo2:'Austria',flag2:'🇦🇹',fecha:'2026-06-22',hora_arg:'14:00',sede:'Dallas',goles1:null,goles2:null,es_argentina:true},
+  {id:67,equipo1:'Argentina',flag1:'⭐',equipo2:'Jordania',flag2:'🇯🇴',fecha:'2026-06-27',hora_arg:'23:00',sede:'Dallas',goles1:null,goles2:null,es_argentina:true},
+];
+
+const GROUPS_LOCAL = {
+  A:{teams:['México 🇲🇽','Sudáfrica 🇿🇦','Corea Sur 🇰🇷','Rep. Checa 🇨🇿']},
+  B:{teams:['Canadá 🇨🇦','Qatar 🇶🇦','Suiza 🇨🇭','Bosnia 🇧🇦']},
+  C:{teams:['Brasil 🇧🇷','Marruecos 🇲🇦','Haití 🇭🇹','Escocia 🏴󠁧󠁢󠁳󠁣󠁴󠁿']},
+  D:{teams:['EE.UU. 🇺🇸','Paraguay 🇵🇾','Australia 🇦🇺','Turquía 🇹🇷']},
+  E:{teams:['Alemania 🇩🇪','Curazao 🇨🇼','C.Marfil 🇨🇮','Ecuador 🇪🇨']},
+  F:{teams:['P.Bajos 🇳🇱','Japón 🇯🇵','Suecia 🇸🇪','Túnez 🇹🇳']},
+  G:{teams:['Bélgica 🇧🇪','Egipto 🇪🇬','Irán 🇮🇷','N.Zelanda 🇳🇿']},
+  H:{teams:['España 🇪🇸','Cabo Verde 🇨🇻','A.Saudita 🇸🇦','Uruguay 🇺🇾']},
+  I:{teams:['Francia 🇫🇷','Senegal 🇸🇳','Noruega 🇳🇴','Irak 🇮🇶']},
+  J:{teams:['Argentina ⭐','Argelia 🇩🇿','Austria 🇦🇹','Jordania 🇯🇴'],isArg:true},
+  K:{teams:['Portugal 🇵🇹','Uzbekistán 🇺🇿','Colombia 🇨🇴','RD Congo 🇨🇩']},
+  L:{teams:['Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croacia 🇭🇷','Ghana 🇬🇭','Panamá 🇵🇦']},
+};
+
+// ════════════════════════════════════════════
+// APP STATE
+// ════════════════════════════════════════════
+let sb = null;
+let allMatches = [];
+let argMatches = [...ARG_LOCAL];
+let cdInterval = null;
+let deferredPrompt = null;
+let notifEnabled = false;
+let currentTab = 'argentina';
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+async function init() {
+  registerSW();
+  checkOnline();
+  renderArgCards(argMatches);
+  startCountdown();
+  
+  try {
+    sb = window.supabase.createClient(SB_URL, SB_KEY);
+    await loadFromSupabase();
+    subscribeRealtime();
+  } catch(e) {
+    console.warn('Supabase no disponible, usando datos locales');
+  }
+
+  setupInstallPrompt();
+  showInstallToast();
+  renderInfoToday();
+}
+
+// ════════════════════════════════════════════
+// SUPABASE
+// ════════════════════════════════════════════
+async function loadFromSupabase() {
+  const { data, error } = await sb.from('mundial_partidos').select('*').order('id');
+  if (error) throw error;
+  if (!data || data.length === 0) return;
+  
+  allMatches = data;
+  const arg = data.filter(m => m.es_argentina && m.fase === 'grupos');
+  if (arg.length) { argMatches = arg; }
+  
+  renderArgCards(argMatches);
+  startCountdown();
+  
+  const renderedTab = currentTab;
+  if (renderedTab === 'grupos') renderGroups(data);
+  if (renderedTab === 'elim') renderElim(data);
+}
+
+function subscribeRealtime() {
+  if (!sb) return;
+  sb.channel('mundial_live')
+    .on('postgres_changes', { event:'UPDATE', schema:'public', table:'mundial_partidos' }, payload => {
+      const upd = payload.new;
+      // Update in allMatches
+      const idx = allMatches.findIndex(m => m.id === upd.id);
+      if (idx >= 0) allMatches[idx] = upd;
+      // Update Argentina cards
+      if (upd.es_argentina) {
+        const ai = argMatches.findIndex(m => m.id === upd.id);
+        if (ai >= 0) { argMatches[ai] = upd; renderArgCards(argMatches); }
+      }
+      // Update current view
+      const sc1 = document.getElementById(`score1-${upd.id}`);
+      const sc2 = document.getElementById(`score2-${upd.id}`);
+      if (sc1) { sc1.textContent = upd.goles1 !== null ? upd.goles1 : ''; sc1.className = 'gsb' + (upd.goles1!==null?' set':''); }
+      if (sc2) { sc2.textContent = upd.goles2 !== null ? upd.goles2 : ''; sc2.className = 'gsb' + (upd.goles2!==null?' set':''); }
+      showUpdateFlash();
+    })
+    .subscribe();
+}
+
+// ════════════════════════════════════════════
+// RENDER ARGENTINA CARDS
+// ════════════════════════════════════════════
+function renderArgCards(matches) {
+  const now = new Date();
+  const container = document.getElementById('arg-cards');
+  container.innerHTML = '';
+  
+  // Find next unplayed match
+  const nextMatch = matches.find(m => m.goles1 === null && m.goles2 === null && parseMatchDate(m) > now);
+  
+  // Update next match banner
+  if (nextMatch) {
+    document.getElementById('nm-label').textContent = '⚡ Próximo partido de Argentina';
+    document.getElementById('nm-team1').textContent = 'Argentina';
+    document.getElementById('nm-team2').textContent = nextMatch.equipo1 === 'Argentina' ? nextMatch.equipo2 : nextMatch.equipo1;
+    document.getElementById('nm-date').textContent = formatDate(nextMatch.fecha) + ' · ' + nextMatch.hora_arg + ' hs';
+    document.getElementById('nm-venue').textContent = '📍 ' + (nextMatch.sede || '');
+    document.getElementById('nm-teams').style.display = 'flex';
+    document.getElementById('nm-info').style.display = 'flex';
+    document.getElementById('countdown').style.display = 'flex';
+    startCountdownTo(parseMatchDate(nextMatch));
+  } else {
+    const allPlayed = matches.every(m => m.goles1 !== null);
+    document.getElementById('nm-label').textContent = allPlayed ? '🏆 Argentina completó la fase de grupos' : '✅ Argentina clasificó — ver Eliminatoria';
+    document.getElementById('nm-teams').style.display = 'none';
+    document.getElementById('nm-info').style.display = 'none';
+    document.getElementById('countdown').style.display = 'none';
+  }
+  
+  // Render each Argentina match card
+  matches.forEach(m => {
+    const isArg1 = m.equipo1 === 'Argentina';
+    const rival = isArg1 ? m.equipo2 : m.equipo1;
+    const rivalFlag = isArg1 ? (m.flag2 || '') : (m.flag1 || '');
+    const golesArg = isArg1 ? m.goles1 : m.goles2;
+    const golesRival = isArg1 ? m.goles2 : m.goles1;
+    const played = golesArg !== null && golesRival !== null;
+    const matchDate = parseMatchDate(m);
+    const isLive = !played && matchDate <= now && now - matchDate < 2*60*60*1000;
+    const argWon = played && golesArg > golesRival;
+    
+    let cardClass = 'arg-card';
+    if (played) cardClass += ' played';
+    else if (matchDate <= now) cardClass += ' current';
+    
+    const div = document.createElement('div');
+    div.className = cardClass;
+    div.innerHTML = `
+      <div class="ac-header">
+        <span class="ac-date">${formatDate(m.fecha)} · ${m.hora_arg} hs</span>
+        ${isLive ? '<span class="live-badge"><span class="live-dot"></span><span class="live-txt">EN VIVO</span></span>' : ''}
+        <span class="ac-venue">📍 ${m.sede||''}</span>
+      </div>
+      <div class="ac-match">
+        <div class="ac-team">
+          <span class="ac-flag">⭐</span>
+          <span class="ac-name arg">Argentina</span>
+        </div>
+        <div class="ac-score">
+          <div class="ac-score-nums">
+            <div class="ac-score-box ${played?(argWon?'win':'filled'):''}" id="arg-sc1-${m.id}">${played ? golesArg : ''}</div>
+            <span class="ac-sep">:</span>
+            <div class="ac-score-box ${played?'filled':''}" id="arg-sc2-${m.id}">${played ? golesRival : ''}</div>
+          </div>
+          <div class="ac-vs">${played ? (argWon?'✅ GANÓ':'❌ PERDIÓ') : 'VS'}</div>
+        </div>
+        <div class="ac-team">
+          <span class="ac-flag">${rivalFlag}</span>
+          <span class="ac-name">${rival}</span>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// ════════════════════════════════════════════
+// COUNTDOWN
+// ════════════════════════════════════════════
+function parseMatchDate(m) {
+  const [h,min] = m.hora_arg.split(':').map(Number);
+  const d = new Date(m.fecha + 'T00:00:00');
+  d.setHours(h, min, 0, 0);
+  // hora_arg is UTC-3, so add 3h to get UTC
+  return new Date(d.getTime() + 3*60*60*1000);
+}
+
+function startCountdown() {
+  const now = new Date();
+  const next = argMatches.find(m => m.goles1 === null && parseMatchDate(m) > now);
+  if (next) startCountdownTo(parseMatchDate(next));
+}
+
+function startCountdownTo(targetUTC) {
+  if (cdInterval) clearInterval(cdInterval);
+  function tick() {
+    const diff = targetUTC - new Date();
+    if (diff <= 0) { clearInterval(cdInterval); return; }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+  }
+  tick();
+  cdInterval = setInterval(tick, 1000);
+}
+
+// ════════════════════════════════════════════
+// RENDER GROUPS
+// ════════════════════════════════════════════
+function renderGroups(matches) {
+  const grid = document.getElementById('groups-grid');
+  grid.innerHTML = '';
+  
+  const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+  
+  grupos.forEach(g => {
+    const gMatches = matches.filter(m => m.grupo === g && m.fase === 'grupos');
+    if (!gMatches.length) {
+      // Use local data
+      const gl = GROUPS_LOCAL[g];
+      if (!gl) return;
+      const div = document.createElement('div');
+      div.className = 'gc' + (gl.isArg ? ' arg-group' : '');
+      div.innerHTML = `
+        <div class="gc-hdr">
+          <span class="gc-letter">Grupo ${g}${gl.isArg?' ⭐':''}</span>
+          <span class="gc-count">${gl.teams.length} equipos</span>
+        </div>
+        <div class="gc-matches">
+          ${gl.teams.map(t => `<div class="gm"><span class="gm-t1 ${t.includes('Argentina')?'arg-team':''}">${t}</span></div>`).join('')}
+        </div>`;
+      grid.appendChild(div);
+      return;
+    }
+    
+    // Get teams
+    const teams = new Set();
+    gMatches.forEach(m => { teams.add(m.equipo1); teams.add(m.equipo2); });
+    
+    const div = document.createElement('div');
+    div.className = 'gc' + (g==='J' ? ' arg-group' : '');
+    
+    const matchesHtml = gMatches.map(m => `
+      <div class="gm">
+        <span class="gm-t1 ${m.equipo1==='Argentina'?'arg-team':''}">${m.flag1||''} ${m.equipo1}</span>
+        <div class="gm-score">
+          <span class="gsb ${m.goles1!==null?'set':''}" id="score1-${m.id}">${m.goles1!==null?m.goles1:''}</span>
+          <span class="gm-sep">:</span>
+          <span class="gsb ${m.goles2!==null?'set':''}" id="score2-${m.id}">${m.goles2!==null?m.goles2:''}</span>
+        </div>
+        <span class="gm-t2 ${m.equipo2==='Argentina'?'arg-team':''}">${m.equipo2} ${m.flag2||''}</span>
+      </div>
+    `).join('');
+    
+    div.innerHTML = `
+      <div class="gc-hdr">
+        <span class="gc-letter">Grupo ${g}${g==='J'?' ⭐':''}</span>
+        <span class="gc-count">${gMatches.length} partidos</span>
+      </div>
+      <div class="gc-matches">${matchesHtml}</div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+// ════════════════════════════════════════════
+// RENDER ELIMINATORIA
+// ════════════════════════════════════════════
+function renderElim(matches) {
+  const container = document.getElementById('elim-content');
+  const fases = [
+    { key:'16avos', label:'⚡ 16avos de Final' },
+    { key:'octavos', label:'⚡ Octavos de Final' },
+    { key:'cuartos', label:'⚡ Cuartos de Final' },
+    { key:'semifinal', label:'🏟️ Semifinales' },
+    { key:'3erpuesto', label:'🥉 Tercer Puesto' },
+    { key:'final', label:'🏆 Gran Final' },
+  ];
+  
+  container.innerHTML = '';
+  
+  fases.forEach(f => {
+    const fm = matches.filter(m => m.fase === f.key);
+    if (!fm.length) return;
+    
+    const section = document.createElement('div');
+    section.className = 'elim-section';
+    
+    const isFinal = f.key === 'final';
+    const cols = isFinal ? 1 : (f.key === '3erpuesto' ? 1 : 2);
+    
+    section.innerHTML = `<div class="elim-title">${f.label}</div>`;
+    const grid = document.createElement('div');
+    grid.className = 'ko-grid';
+    if (isFinal || f.key === '3erpuesto') grid.style.gridTemplateColumns = '1fr';
+    
+    fm.forEach(m => {
+      const card = document.createElement('div');
+      const isArg = m.es_argentina;
+      card.className = 'ko-card' + (isArg?' arg':'') + (isFinal?' final-card':'');
+      
+      const played = m.goles1 !== null && m.goles2 !== null;
+      
+      if (isFinal) {
+        card.innerHTML = `
+          <div class="ko-date ${isArg?'arg':''}">🏆 ${formatDate(m.fecha)} · ${m.hora_arg} hs · ${m.sede||''}</div>
+          <div class="final-match">
+            <div class="final-team"><span class="final-team-name">${m.equipo1}</span></div>
+            <div>
+              <div class="final-score-big">
+                <div class="final-sb ${played?'set':''}">${played?m.goles1:''}</div>
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold)">:</span>
+                <div class="final-sb ${played?'set':''}">${played?m.goles2:''}</div>
+              </div>
+              <div class="final-vs" style="text-align:center;margin-top:2px;">VS</div>
+            </div>
+            <div class="final-team"><span class="final-team-name">${m.equipo2}</span></div>
+          </div>
+        `;
+      } else {
+        card.innerHTML = `
+          <span class="ko-date ${isArg?'arg':''}">${formatDate(m.fecha)} · ${m.hora_arg} hs</span>
+          <div class="ko-match">
+            <span class="ko-team ${isArg?'arg':''}">${(m.flag1&&m.flag1!=='⭐')?m.flag1+' ':''}${m.equipo1}</span>
+            <div class="ko-score">
+              <div class="kosb ${played?'set':''}" id="score1-${m.id}">${played?m.goles1:''}</div>
+              <span style="font-size:9px;color:var(--muted)">:</span>
+              <div class="kosb ${played?'set':''}" id="score2-${m.id}">${played?m.goles2:''}</div>
+            </div>
+            <span class="ko-team ${isArg?'arg':''}" style="text-align:right">${m.equipo2}${(m.flag2&&m.flag2!=='⭐')?' '+m.flag2:''}</span>
+          </div>
+          <span class="ko-venue">📍 ${m.sede||''}</span>
+        `;
+      }
+      grid.appendChild(card);
+    });
+    
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+}
+
+// ════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════
+function setTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.section').forEach(s => { s.style.display='none'; s.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  
+  const sec = document.getElementById('sec-' + tab);
+  sec.style.display = 'block';
+  sec.classList.add('active');
+  btn.classList.add('active');
+  
+  // Lazy render
+  if (tab === 'grupos' && allMatches.length) renderGroups(allMatches);
+  if (tab === 'elim' && allMatches.length) renderElim(allMatches);
+  if (tab === 'info') renderInfoToday();
+}
+
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+function formatDate(fecha) {
+  if (!fecha) return '';
+  const [y,m,d] = fecha.split('-');
+  const months = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const days = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const dt = new Date(y, m-1, d);
+  return `${days[dt.getDay()]} ${d}/${m}`;
+}
+
+function renderInfoToday() {
+  const el = document.getElementById('info-today');
+  if (!el) return;
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const todayMatches = allMatches.filter(m => m.fecha === today);
+  if (!todayMatches.length) {
+    el.innerHTML = 'No hay partidos programados para hoy.';
+  } else {
+    el.innerHTML = todayMatches.map(m => `<div>${m.flag1||''} ${m.equipo1} vs ${m.equipo2} ${m.flag2||''} — ${m.hora_arg} hs</div>`).join('');
+  }
+}
+
+function showUpdateFlash() {
+  const hdr = document.querySelector('.hdr');
+  hdr.style.borderBottomColor = '#2ECC71';
+  setTimeout(() => { hdr.style.borderBottomColor = 'var(--gold)'; }, 1000);
+}
+
+// ════════════════════════════════════════════
+// PWA INSTALL
+// ════════════════════════════════════════════
+function setupInstallPrompt() {
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('install-btn').style.display = 'block';
+  });
+  window.addEventListener('appinstalled', () => {
+    document.getElementById('install-btn').style.display = 'none';
+    closeToast();
+  });
+}
+
+function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(r => {
+    if (r.outcome === 'accepted') closeToast();
+    deferredPrompt = null;
+  });
+}
+
+function showInstallToast() {
+  const installed = window.matchMedia('(display-mode: standalone)').matches;
+  if (!installed) {
+    setTimeout(() => {
+      document.getElementById('install-toast').classList.add('show');
+    }, 3000);
+  }
+}
+
+function closeToast() {
+  document.getElementById('install-toast').classList.remove('show');
+}
+
+// ════════════════════════════════════════════
+// PUSH NOTIFICATIONS
+// ════════════════════════════════════════════
+async function toggleNotif() {
+  const btn = document.getElementById('notif-btn');
+  if (notifEnabled) {
+    notifEnabled = false;
+    btn.textContent = '🔔 Activar';
+    btn.classList.remove('active');
+    return;
+  }
+  
+  if (!('Notification' in window)) {
+    alert('Tu navegador no soporta notificaciones. Instalá la app primero.');
+    return;
+  }
+  
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    notifEnabled = true;
+    btn.textContent = '🔕 ON';
+    btn.classList.add('active');
+    await subscribeNotif();
+    // Show sample notification
+    new Notification('✅ Notificaciones activadas', {
+      body: 'Te avisaremos antes de cada partido de Argentina ⭐',
+      icon: '/icons/icon-192.png',
+    });
+  } else {
+    alert('Necesitás dar permiso para recibir notificaciones.');
+  }
+}
+
+async function subscribeNotif() {
+  if (!('serviceWorker' in navigator) || !sb) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
+    });
+    const json = sub.toJSON();
+    await sb.from('mundial_push_subs').upsert({
+      endpoint: json.endpoint,
+      p256dh: json.keys.p256dh,
+      auth: json.keys.auth,
+    }, { onConflict: 'endpoint' });
+  } catch(e) {
+    console.warn('Push subscription error:', e);
+  }
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+  return outputArray;
+}
+
+// ════════════════════════════════════════════
+// ONLINE / OFFLINE
+// ════════════════════════════════════════════
+function checkOnline() {
+  const bar = document.getElementById('offline-bar');
+  window.addEventListener('online', () => { bar.classList.remove('show'); loadFromSupabase(); });
+  window.addEventListener('offline', () => bar.classList.add('show'));
+  if (!navigator.onLine) bar.classList.add('show');
+}
+
+// ════════════════════════════════════════════
+// SERVICE WORKER
+// ════════════════════════════════════════════
+function registerSW() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.warn('SW error:', e));
+  }
+}
+
+// ════════════════════════════════════════════
+// START
+// ════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
