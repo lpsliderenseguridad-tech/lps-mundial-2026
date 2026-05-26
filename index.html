@@ -792,24 +792,58 @@ function closeToast() {
 // ════════════════════════════════════════════
 async function toggleNotif() {
   const btn = document.getElementById('notif-btn');
-  if (typeof OneSignalDeferred === 'undefined') {
-    alert('Cargando OneSignal, intentá en unos segundos');
+
+  // Si ya está activo, mostrar instrucción para desactivar
+  if (notifEnabled) {
+    alert('Las notificaciones están ACTIVAS ✅\n\nPara desactivarlas:\nAndroid: Ajustes → Notificaciones → Chrome → desactivar LPS Mundial\niPhone: Ajustes → Safari → Notificaciones');
     return;
   }
-  OneSignalDeferred.push(async function(OneSignal) {
-    const isEnabled = await OneSignal.User.PushSubscription.optedIn;
-    if (isEnabled) {
-      await OneSignal.User.PushSubscription.optOut();
-      notifEnabled = false;
-      btn.textContent = '🔔 Activar';
-      btn.classList.remove('active');
-    } else {
+
+  // Pedir permiso nativo del navegador
+  if (!('Notification' in window)) {
+    showNotifGuide();
+    return;
+  }
+
+  if (Notification.permission === 'granted') {
+    // Ya tiene permiso, suscribir con OneSignal
+    OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.User.PushSubscription.optIn();
-      notifEnabled = true;
-      btn.textContent = '🔕 ON';
-      btn.classList.add('active');
-    }
-  });
+    });
+    notifEnabled = true;
+    btn.textContent = '🔕 ON';
+    btn.classList.add('active');
+    alert('✅ Notificaciones activadas!\nTe vamos a avisar antes de cada partido de Argentina 🇦🇷');
+    return;
+  }
+
+  if (Notification.permission === 'denied') {
+    showNotifGuide();
+    return;
+  }
+
+  // Pedir permiso
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.User.PushSubscription.optIn();
+    });
+    notifEnabled = true;
+    btn.textContent = '🔕 ON';
+    btn.classList.add('active');
+    alert('✅ Notificaciones activadas!\nTe vamos a avisar antes de cada partido de Argentina 🇦🇷');
+  } else {
+    showNotifGuide();
+  }
+}
+
+function showNotifGuide() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (isIOS) {
+    alert('Para activar notificaciones en iPhone:\n\n1. Cerrá esta app\n2. Abrí Ajustes del iPhone\n3. Safari → Notificaciones\n4. Buscá mundial.lpsseguridad.com.ar\n5. Activá las notificaciones\n6. Volvé a abrir la app');
+  } else {
+    alert('Para activar notificaciones en Android:\n\n1. Tocá el candado 🔒 en la barra de arriba\n2. Tocá "Permisos del sitio"\n3. Notificaciones → Permitir\n4. Recargá la página\n\nO en Ajustes → Aplicaciones → Chrome → Notificaciones → Activar');
+  }
 }
 
 async function subscribeNotif() {
