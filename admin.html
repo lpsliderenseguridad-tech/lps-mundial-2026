@@ -627,8 +627,19 @@ async function clearMatch(id) {
     .update({ goles1:null, goles2:null, penales1:null, penales2:null })
     .eq('id', id);
   if (!error) {
-    showToast('Resultado borrado');
-    loadMatches();
+    // Update local state immediately
+    const idx = allMatches.findIndex(m => m.id === id);
+    if (idx >= 0) {
+      allMatches[idx].goles1 = null;
+      allMatches[idx].goles2 = null;
+      allMatches[idx].penales1 = null;
+      allMatches[idx].penales2 = null;
+    }
+    updateStats();
+    renderList();
+    showToast('✅ Resultado borrado');
+  } else {
+    showToast('Error al borrar: ' + error.message, 'error');
   }
 }
 
