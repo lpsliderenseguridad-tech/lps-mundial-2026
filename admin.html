@@ -432,21 +432,33 @@ const FUNC_URL = 'https://gesujigrxpqvyuquitmz.supabase.co/functions/v1/send-not
 
 async function sendPush(title, body) {
   try {
+    toast('📤 Enviando notificación...');
     // Obtener todas las suscripciones
-    const { data: subs } = await sb.from('mundial_push_subs').select('*');
-    if (!subs || subs.length === 0) { toast('Sin suscriptores aún', 'err'); return; }
+    const { data: subs, error: subErr } = await sb.from('mundial_push_subs').select('*');
+    if (subErr) { toast('Error obteniendo suscriptores: ' + subErr.message, 'err'); return; }
+    if (!subs || subs.length === 0) { toast('Sin suscriptores — activá las notificaciones en la app', 'err'); return; }
     
     const { data: { session } } = await sb.auth.getSession();
+    if (!session) { toast('Sesión expirada, volvé a ingresar', 'err'); return; }
+
     const res = await fetch(FUNC_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + session.access_token,
+        'apikey': 'sb_publishable_jEvLMS6TZnRFgyAtEaY7JQ_Va8XpgYk',
       },
       body: JSON.stringify({ title, body, url: '/', subscriptions: subs })
     });
+    
+    if (!res.ok) {
+      const errText = await res.text();
+      toast('Error función: ' + errText, 'err');
+      return;
+    }
+    
     const result = await res.json();
-    toast('🔔 Notificación enviada a ' + result.ok + ' celulares');
+    toast('✅ Notificación enviada a ' + result.ok + ' celulares · ' + result.err + ' errores');
   } catch(e) {
     toast('Error: ' + e.message, 'err');
   }
