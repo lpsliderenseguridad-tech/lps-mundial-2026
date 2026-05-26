@@ -170,6 +170,22 @@ input,button,select{font-family:'Barlow Condensed',sans-serif;}
     <button onclick="loadMatches()" style="margin-left:auto;background:rgba(108,172,228,.1);border:1px solid rgba(108,172,228,.2);color:var(--cel);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;cursor:pointer;">🔄 Actualizar</button>
   </div>
 
+  <!-- NOTIFICACION LIBRE -->
+  <div style="background:var(--d3);border-bottom:1px solid rgba(255,255,255,.05);padding:8px 10px;flex-shrink:0;">
+    <div style="display:flex;gap:6px;align-items:flex-start;">
+      <div style="flex:1;">
+        <input id="notif-title" type="text" placeholder="Título ej: ¡Argentina ganó! 🏆" maxlength="50"
+          style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:7px 10px;color:var(--white);font-size:12px;font-weight:600;outline:none;margin-bottom:5px;font-family:'Barlow Condensed',sans-serif;">
+        <input id="notif-body" type="text" placeholder="Mensaje ej: Vamos campeón!! 🔥 LPS Seguridad" maxlength="100"
+          style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:7px 10px;color:var(--white);font-size:12px;font-weight:600;outline:none;font-family:'Barlow Condensed',sans-serif;">
+      </div>
+      <button onclick="sendCustomPush()" 
+        style="background:var(--cel);color:#000;border:none;border-radius:7px;padding:10px 12px;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer;flex-shrink:0;height:72px;">
+        📤 ENVIAR<br>A TODOS
+      </button>
+    </div>
+  </div>
+
   <div class="match-list" id="match-list">
     <div class="spinner"></div>
   </div>
