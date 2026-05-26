@@ -396,13 +396,16 @@ async function loadMatches() {
   renderList();
 }
 
+let ignoringRealtime = false;
+
 function subscribeRealtime() {
   sb.channel('admin_live')
     .on('postgres_changes', { event:'UPDATE', schema:'public', table:'mundial_partidos' }, payload => {
+      // Ignorar eventos que vienen de nuestras propias acciones
+      if (ignoringRealtime) return;
       const idx = allMatches.findIndex(m => m.id === payload.new.id);
       if (idx >= 0) allMatches[idx] = payload.new;
       updateStats();
-      // Update individual card if visible without full re-render
       const card = document.querySelector(`[data-id="${payload.new.id}"]`);
       if (card) updateCardUI(card, payload.new);
       document.getElementById('live-indicator').style.display = 'flex';
@@ -606,7 +609,9 @@ async function saveMatch(id) {
   if (pen1 !== null) updates.penales1 = pen1;
   if (pen2 !== null) updates.penales2 = pen2;
 
+  ignoringRealtime = true;
   const { error } = await sb.from('mundial_partidos').update(updates).eq('id', id);
+  setTimeout(() => { ignoringRealtime = false; }, 2000);
 
   if (error) {
     btn.className = 'btn-save error';
@@ -638,11 +643,13 @@ async function clearMatch(id) {
   updateStats();
   renderList();
 
-  // Guardar en Supabase
+  // Guardar en Supabase — pausar realtime para evitar que vuelva el valor
+  ignoringRealtime = true;
   const { error } = await sb
     .from('mundial_partidos')
     .update({ goles1: null, goles2: null, penales1: null, penales2: null })
     .eq('id', id);
+  setTimeout(() => { ignoringRealtime = false; }, 3000);
 
   if (error) {
     // Revertir si fallo
