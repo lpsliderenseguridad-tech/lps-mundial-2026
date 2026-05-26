@@ -853,7 +853,21 @@ function registerSW() {
 // ════════════════════════════════════════════
 // START
 // ════════════════════════════════════════════
+async function checkExistingSubscription() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) {
+      notifEnabled = true;
+      const btn = document.getElementById('notif-btn');
+      if (btn) { btn.textContent = '🔕 ON'; btn.classList.add('active'); }
+    }
+  } catch(e) {}
+}
+
 init();
+checkExistingSubscription();
 </script>
 </body>
 </html>
