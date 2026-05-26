@@ -333,7 +333,7 @@ body{display:flex;flex-direction:column;}
 // ════════════════════════════════════════════
 const SB_URL  = 'https://gesujigrxpqvyuquitmz.supabase.co';
 const SB_KEY  = 'sb_publishable_jEvLMS6TZnRFgyAtEaY7JQ_Va8XpgYk'; // ← reemplazar con tu anon key
-const VAPID_PUBLIC = 'TU_VAPID_PUBLIC_KEY'; // ← reemplazar (Parte 3)
+const VAPID_PUBLIC = 'BDqXa2eSangWos9R3FNibA8FyjXp5MTeMNCA1rGSS3d05sDHeWGhs9OIrz3qa4m7u9cCLu3KhVtBXYubiukSe_w'; // ← reemplazar (Parte 3)
 
 // ════════════════════════════════════════════
 // DATOS LOCALES (fallback sin internet)
@@ -414,7 +414,7 @@ async function loadFromSupabase() {
 
 function subscribeRealtime() {
   if (!sb) return;
-  sb.channel('mundial_live')
+  sb.channel('mundial_live' + Math.random())
     .on('postgres_changes', { event:'UPDATE', schema:'public', table:'mundial_partidos' }, payload => {
       const upd = payload.new;
       // Update in allMatches
