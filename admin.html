@@ -623,23 +623,37 @@ async function saveMatch(id) {
 
 async function clearMatch(id) {
   if (!confirm('¿Borrar el resultado de este partido?')) return;
-  const { error } = await sb.from('mundial_partidos')
-    .update({ goles1:null, goles2:null, penales1:null, penales2:null })
+
+  // Guardar estado anterior por si hay que revertir
+  const idx = allMatches.findIndex(m => m.id === id);
+  const prev = idx >= 0 ? Object.assign({}, allMatches[idx]) : null;
+
+  // Actualizar local inmediatamente
+  if (idx >= 0) {
+    allMatches[idx].goles1 = null;
+    allMatches[idx].goles2 = null;
+    allMatches[idx].penales1 = null;
+    allMatches[idx].penales2 = null;
+  }
+  updateStats();
+  renderList();
+
+  // Guardar en Supabase
+  const { error } = await sb
+    .from('mundial_partidos')
+    .update({ goles1: null, goles2: null, penales1: null, penales2: null })
     .eq('id', id);
-  if (!error) {
-    // Update local state immediately
-    const idx = allMatches.findIndex(m => m.id === id);
-    if (idx >= 0) {
-      allMatches[idx].goles1 = null;
-      allMatches[idx].goles2 = null;
-      allMatches[idx].penales1 = null;
-      allMatches[idx].penales2 = null;
-    }
+
+  if (error) {
+    // Revertir si fallo
+    if (idx >= 0 && prev) allMatches[idx] = prev;
     updateStats();
     renderList();
-    showToast('✅ Resultado borrado');
-  } else {
     showToast('Error al borrar: ' + error.message, 'error');
+  } else {
+    showToast('Resultado borrado');
+    // Recargar todo desde Supabase para garantizar consistencia
+    setTimeout(() => loadMatches(), 800);
   }
 }
 
