@@ -357,6 +357,7 @@ function buildCard(m) {
     <div class="mc-actions">
       <button class="btn-save" id="btn-${m.id}" onclick="saveMatch(${m.id})">💾 GUARDAR Y PUBLICAR</button>
       <button class="btn-del" id="del-${m.id}" onclick="delMatch(${m.id})" ${!played?'style="display:none"':''}>✕</button>
+      ${isArg ? `<button onclick="sendPush('⚽ Partido de Argentina', 'Argentina vs ' + m.equipo2 + ' · ' + m.hora_arg + ' hs · ' + (m.sede||''))" style="background:rgba(108,172,228,.12);border:1px solid rgba(108,172,228,.25);color:#9ECAF0;border-radius:7px;padding:9px 10px;font-size:13px;cursor:pointer;" title="Notificar">🔔</button>` : ''}
     </div>
   `;
   return div;
@@ -422,6 +423,32 @@ async function delMatch(id) {
       const newCard = buildCard(matches[idx]);
       card.replaceWith(newCard);
     }
+  }
+}
+
+// ── PUSH NOTIFICATIONS ──
+const VAPID_PUBLIC = 'BDqXa2eSangWos9R3FNibA8FyjXp5MTeMNCA1rGSS3d05sDHeWGhs9OIrz3qa4m7u9cCLu3KhVtBXYubiukSe_w';
+const FUNC_URL = 'https://gesujigrxpqvyuquitmz.supabase.co/functions/v1/send-notification';
+
+async function sendPush(title, body) {
+  try {
+    // Obtener todas las suscripciones
+    const { data: subs } = await sb.from('mundial_push_subs').select('*');
+    if (!subs || subs.length === 0) { toast('Sin suscriptores aún', 'err'); return; }
+    
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(FUNC_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + session.access_token,
+      },
+      body: JSON.stringify({ title, body, url: '/', subscriptions: subs })
+    });
+    const result = await res.json();
+    toast('🔔 Notificación enviada a ' + result.ok + ' celulares');
+  } catch(e) {
+    toast('Error: ' + e.message, 'err');
   }
 }
 
