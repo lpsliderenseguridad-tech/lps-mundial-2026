@@ -470,7 +470,15 @@ async function sendPush(title, body) {
     toast('Error: ' + e.message, 'err');
   }
 }
-
+async function sendCustomPush() {
+  const title = document.getElementById('notif-title').value.trim();
+  const body  = document.getElementById('notif-body').value.trim();
+  if (!title) { toast('Escribí un título', 'err'); return; }
+  if (!body)  { toast('Escribí un mensaje', 'err'); return; }
+  await sendPush(title, body);
+  document.getElementById('notif-title').value = '';
+  document.getElementById('notif-body').value  = '';
+}
 checkAuth();
 loadSubs();
 </script>
