@@ -433,20 +433,15 @@ const OS_API_KEY = 'os_v2_app_4wr6jp2ojfcm3jrpv7uiaybsesfu5cieggte2nmkta5fowkorw
 async function sendPush(title, body) {
   try {
     toast('📤 Enviando notificación...');
-    const res = await fetch('https://api.onesignal.com/notifications', {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch('https://gesujigrxpqvyuquitmz.supabase.co/functions/v1/send-notification', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Key ' + OS_API_KEY,
+        'Authorization': 'Bearer ' + session.access_token,
+        'apikey': 'sb_publishable_jEvLMS6TZnRFgyAtEaY7JQ_Va8XpgYk',
       },
-      body: JSON.stringify({
-        app_id: OS_APP_ID,
-        included_segments: ['All'],
-        headings: { es: title, en: title },
-        contents: { es: body, en: body },
-        url: 'https://lps-mundial-2026.vercel.app',
-        chrome_web_icon: 'https://lps-mundial-2026.vercel.app/icon-192.png',
-      })
+      body: JSON.stringify({ title, body, url: 'https://lps-mundial-2026.vercel.app' })
     });
     const result = await res.json();
     if (result.errors) {
