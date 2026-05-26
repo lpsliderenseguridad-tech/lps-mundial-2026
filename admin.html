@@ -167,7 +167,8 @@ input,button,select{font-family:'Barlow Condensed',sans-serif;}
     <div class="stat-g"><span class="stat-n" id="s-j">0</span><span class="stat-l">Jugados</span></div>
     <div class="stat-r"><span class="stat-n" id="s-r">0</span><span class="stat-l">Restantes</span></div>
     <div><span class="stat-n" id="s-h">0</span><span class="stat-l">Hoy</span></div>
-    <button onclick="loadMatches()" style="margin-left:auto;background:rgba(108,172,228,.1);border:1px solid rgba(108,172,228,.2);color:var(--cel);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;cursor:pointer;">🔄 Actualizar</button>
+    <div><span class="stat-n" id="s-subs">—</span><span class="stat-l">Suscriptores</span></div>
+    <button onclick="loadMatches();loadSubs()" style="margin-left:auto;background:rgba(108,172,228,.1);border:1px solid rgba(108,172,228,.2);color:var(--cel);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;cursor:pointer;">🔄 Actualizar</button>
   </div>
 
   <!-- NOTIFICACION LIBRE -->
@@ -469,16 +470,9 @@ async function sendPush(title, body) {
     toast('Error: ' + e.message, 'err');
   }
 }
-async function sendCustomPush() {
-  const title = document.getElementById('notif-title').value.trim();
-  const body  = document.getElementById('notif-body').value.trim();
-  if (!title) { toast('Escribí un título', 'err'); return; }
-  if (!body)  { toast('Escribí un mensaje', 'err'); return; }
-  await sendPush(title, body);
-  document.getElementById('notif-title').value = '';
-  document.getElementById('notif-body').value  = '';
-}
+
 checkAuth();
+loadSubs();
 </script>
 </body>
 </html>
